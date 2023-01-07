@@ -1,9 +1,11 @@
-# Change Log
+### 0.0.2 (2023-01-08)
+* Add file monitoring for TypeScript (glob: `**/tsconfig.{json,app.json,app.js,js,ts}`) 
+* Add file monitoring for ESLint (glob: `**/.eslintrc.{js,cjs,yaml,yml,json}}`)
+* Add toggle commands (`ctrl + shift + p`)
+  * `Enable: Auto Restart TypeScript Server`
+  * `Disable: Auto Restart TypeScript Server`
+  * `Enable: Auto Restart ESLint Server`
+  * `Disable: Auto Restart ESLint Server`
 
-All notable changes to the "auto-restart-typescript-and-eslint-servers" extension will be documented in this file.
-
-Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
-
-## [Unreleased]
-
-- Initial release
+### 0.0.1 (2023-01-07)
+* Initial release

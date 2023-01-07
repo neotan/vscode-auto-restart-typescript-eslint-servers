@@ -1,27 +1,99 @@
 {
-  "name": "vscode-auto-restart-typescript-and-eslint-servers",
-  "displayName": "Auto Restart TypeScript and ESLint Servers",
-  "description": "Restart TypeScript or ESLint server automatically if monitored configuration or files changed.",
-  "version": "0.0.1",
+  "name": "vscode-auto-restart-typescript-eslint-servers",
+  "displayName": "Auto Restart TypeScript / ESLint Servers",
+  "description": "Restart TypeScript / ESLint servers automatically if monitored files changed.",
+  "publisher": "neotan",
+  "version": "0.0.2",
   "engines": {
     "vscode": "^1.74.0"
   },
+  "icon": "images/icon.png",
+  "homepage": "https://github.com/neotan/vscode-auto-restart-typescript-eslint-servers.git",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/neotan/vscode-auto-restart-typescript-eslint-servers.git"
+  },
+  "bugs": {
+    "url": "https://github.com/neotan/vscode-auto-restart-typescript-eslint-servers.git/issues"
+  },
+  "keywords": [
+    "monitor",
+    "file watch",
+    "folder watch",
+    "on change",
+    "on delete",
+    "on create",
+    "auto",
+    "restart",
+    "tsconfig",
+    "eslint",
+    "eslintrc",
+    "server",
+    "turborepo",
+    "nx",
+    "configuration",
+    "reload",
+    "typescript"
+  ],
   "categories": [
     "Other"
   ],
   "activationEvents": [
-    "onCommand:vscode-auto-restart-typescript-and-eslint-servers.helloWorld"
+    "*"
   ],
   "main": "./out/extension.js",
   "contributes": {
+    "configuration": {
+      "type": "object",
+      "title": "Auto Restart TypeScript / ESLint Servers",
+      "properties": {
+        "autoRestartTsESLint.monitorFilesForTypescript": {
+          "type": "boolean",
+          "default": true,
+          "scope": "window",
+          "markdownDescription": "Monitor TypeScript config files and restart its server."
+        },
+        "autoRestartTsESLint.includeFilesForTypescript": {
+          "type": "string",
+          "default": "**/tsconfig.{json,app.json,app.js,js,ts}",
+          "scope": "window",
+          "markdownDescription": "These files will be monitored, supports [Glob Pattern](https://code.visualstudio.com/api/references/vscode-api#GlobPattern). Default `**/tsconfig.{json,app.json,app.js,js,ts}`."
+        },
+        "autoRestartTsESLint.monitorFilesForESLint": {
+          "type": "boolean",
+          "default": true,
+          "scope": "window",
+          "markdownDescription": "Monitor ESLint config files and restart its server."
+        },
+        "autoRestartTsESLint.includeFilesForESLint": {
+          "type": "string",
+          "default": "**/.eslintrc.{js,cjs,yaml,yml,json}}",
+          "scope": "window",
+          "markdownDescription": "These files will be monitored, supports [Glob Pattern](https://code.visualstudio.com/api/references/vscode-api#GlobPattern). Default `**/.eslintrc.{js,cjs,yaml,yml,json}}`"
+        }
+      }
+    },
     "commands": [
       {
-        "command": "vscode-auto-restart-typescript-and-eslint-servers.helloWorld",
-        "title": "Hello World"
+        "command": "vscode-auto-restart-typescript-eslint-servers.enableMonitorFilesForTypescript",
+        "title": "Enable: Auto Restart TypeScript Server"
+      },
+      {
+        "command": "vscode-auto-restart-typescript-eslint-servers.disableMonitorFilesForTypescript",
+        "title": "Disable: Auto Restart TypeScript Server"
+      },
+      {
+        "command": "vscode-auto-restart-typescript-eslint-servers.enableMonitorFilesForESLint",
+        "title": "Enable: Auto Restart ESLint Server"
+      },
+      {
+        "command": "vscode-auto-restart-typescript-eslint-servers.disableMonitorFilesForESLint",
+        "title": "Disable: Auto Restart ESLint Server"
       }
     ]
   },
   "scripts": {
+    "package": "vsce package --allow-star-activation",
     "vscode:prepublish": "npm run compile",
     "compile": "tsc -p ./",
     "watch": "tsc -watch -p ./",
