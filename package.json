@@ -1,7 +1,7 @@
 {
   "name": "vscode-auto-restart-typescript-eslint-servers",
   "displayName": "Auto Restart TypeScript / ESLint Servers",
-  "description": "Restart TypeScript / ESLint servers automatically if monitored files changed.",
+  "description": "Restart TypeScript / ESLint servers AUTOMATICALLY when monitored files were changed.",
   "publisher": "neotan",
   "version": "0.0.3",
   "engines": {
@@ -30,6 +30,7 @@
     "eslintrc",
     "server",
     "turborepo",
+    "lerna",
     "nx",
     "configuration",
     "reload",

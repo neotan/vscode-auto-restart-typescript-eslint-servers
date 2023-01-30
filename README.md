@@ -6,7 +6,7 @@ Restart TypeScript or ESLint server automatically if monitored configuration or 
 
 ## Features
 - Restart TypeScript and ESLint servers automatically
-- Enable/Disable files monitoring
+- Enable/Disable file monitoring
 
 ## Credits
 * [vscode-restart-ts-server-button](https://github.com/qcz/vscode-restart-ts-server-button) by [Qcz](github.com/qcz)
