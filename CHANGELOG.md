@@ -1,3 +1,6 @@
+### 0.0.3 (2023-01-30)
+Update icon
+
 ### 0.0.2 (2023-01-08)
 * Add file monitoring for TypeScript (glob: `**/tsconfig.{json,app.json,app.js,js,ts}`) 
 * Add file monitoring for ESLint (glob: `**/.eslintrc.{js,cjs,yaml,yml,json}}`)
