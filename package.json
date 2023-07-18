@@ -68,9 +68,9 @@
         },
         "autoRestartTsESLint.includeFilesForESLint": {
           "type": "string",
-          "default": "**/.eslintrc.{js,cjs,yaml,yml,json}}",
+          "default": "**/.eslintrc.{js,cjs,yaml,yml,json}",
           "scope": "window",
-          "markdownDescription": "These files will be monitored, supports [Glob Pattern](https://code.visualstudio.com/api/references/vscode-api#GlobPattern). Default `**/.eslintrc.{js,cjs,yaml,yml,json}}`"
+          "markdownDescription": "These files will be monitored, supports [Glob Pattern](https://code.visualstudio.com/api/references/vscode-api#GlobPattern). Default `**/.eslintrc.{js,cjs,yaml,yml,json}`"
         }
       }
     },
