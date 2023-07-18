@@ -1,7 +1,11 @@
+### 0.0.4 (2023-07-18)
+* fix .eslintrc.js typo
+* add auto publishing GitHub Action
+
 ### 0.0.3 (2023-01-30)
 Update icon
 
-### 0.0.2 (2023-01-08)
+## 0.0.2 (2023-01-08)
 * Add file monitoring for TypeScript (glob: `**/tsconfig.{json,app.json,app.js,js,ts}`) 
 * Add file monitoring for ESLint (glob: `**/.eslintrc.{js,cjs,yaml,yml,json}}`)
 * Add toggle commands (`ctrl + shift + p`)
