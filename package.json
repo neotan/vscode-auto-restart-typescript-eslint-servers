@@ -3,7 +3,7 @@
   "displayName": "Auto Restart TypeScript / ESLint Servers",
   "description": "Restart TypeScript / ESLint servers AUTOMATICALLY when monitored files were changed.",
   "publisher": "neotan",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "engines": {
     "vscode": "^1.74.0"
   },
@@ -48,53 +48,48 @@
       "type": "object",
       "title": "Auto Restart TypeScript / ESLint Servers",
       "properties": {
-        "autoRestartTsESLint.monitorFilesForTypescript": {
+        "autoRestart.monitorFilesForTypescript": {
           "type": "boolean",
           "default": true,
           "scope": "window",
           "markdownDescription": "Monitor TypeScript config files and restart its server."
         },
-        "autoRestartTsESLint.includeFilesForTypescript": {
+        "autoRestart.fileGlobForTypescript": {
           "type": "string",
           "default": "**/tsconfig.{json,app.json,app.js,js,ts}",
           "scope": "window",
-          "markdownDescription": "These files will be monitored, supports [Glob Pattern](https://code.visualstudio.com/api/references/vscode-api#GlobPattern). Default `**/tsconfig.{json,app.json,app.js,js,ts}`."
+          "markdownDescription": "Monitors these files, supports [Glob Pattern](https://code.visualstudio.com/api/references/vscode-api#GlobPattern). Default `**/tsconfig.{json,app.json,app.js,js,ts}`."
         },
-        "autoRestartTsESLint.monitorFilesForESLint": {
+        "autoRestart.monitorFilesForESLint": {
           "type": "boolean",
           "default": true,
           "scope": "window",
           "markdownDescription": "Monitor ESLint config files and restart its server."
         },
-        "autoRestartTsESLint.includeFilesForESLint": {
+        "autoRestart.fileGlobForESLint": {
           "type": "string",
           "default": "**/.eslintrc.{js,cjs,yaml,yml,json}",
           "scope": "window",
-          "markdownDescription": "These files will be monitored, supports [Glob Pattern](https://code.visualstudio.com/api/references/vscode-api#GlobPattern). Default `**/.eslintrc.{js,cjs,yaml,yml,json}`"
+          "markdownDescription": "Monitors these files, supports [Glob Pattern](https://code.visualstudio.com/api/references/vscode-api#GlobPattern). Default `**/.eslintrc.{js,cjs,yaml,yml,json}`"
+        },
+        "autoRestart.showRestartNotificationForTypescript": {
+          "type": "boolean",
+          "default": true,
+          "scope": "window",
+          "markdownDescription": "Show notification when restarts TypeScript server."
+        },
+        "autoRestart.showRestartNotificationForESLint": {
+          "type": "boolean",
+          "default": true,
+          "scope": "window",
+          "markdownDescription": "Show notification when restarts ESLint server."
         }
       }
-    },
-    "commands": [
-      {
-        "command": "vscode-auto-restart-typescript-eslint-servers.enableMonitorFilesForTypescript",
-        "title": "Enable: Auto Restart TypeScript Server"
-      },
-      {
-        "command": "vscode-auto-restart-typescript-eslint-servers.disableMonitorFilesForTypescript",
-        "title": "Disable: Auto Restart TypeScript Server"
-      },
-      {
-        "command": "vscode-auto-restart-typescript-eslint-servers.enableMonitorFilesForESLint",
-        "title": "Enable: Auto Restart ESLint Server"
-      },
-      {
-        "command": "vscode-auto-restart-typescript-eslint-servers.disableMonitorFilesForESLint",
-        "title": "Disable: Auto Restart ESLint Server"
-      }
-    ]
+    }
   },
   "scripts": {
     "package": "vsce package --allow-star-activation",
+    "install-vsix": "code --install-extension ",
     "vscode:prepublish": "npm run compile",
     "compile": "tsc -p ./",
     "watch": "tsc -watch -p ./",
