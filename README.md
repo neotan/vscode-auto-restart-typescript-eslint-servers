@@ -1,8 +1,11 @@
 # vscode-auto-restart-typescript-eslint-servers
 
 Restart TypeScript or ESLint server automatically if monitored configuration or files changed. 
-
 <img src="https://raw.githubusercontent.com/neotan/vscode-auto-restart-typescript-eslint-servers/master/images/_banner.png" alt="Banner" />
+
+## VS Code Marketplace:
+https://marketplace.visualstudio.com/items?itemName=neotan.vscode-auto-restart-typescript-eslint-servers
+
 
 ## Features
 - Restart TypeScript and ESLint servers automatically
