@@ -55,10 +55,10 @@
           "markdownDescription": "Monitor TypeScript config files and restart its server."
         },
         "autoRestart.fileGlobForTypescript": {
-          "type": "string",
-          "default": "**/tsconfig.{json,app.json,app.js,js,ts}",
+          "type": "array",
+          "default": ["**/tsconfig.{json,app.json,app.js,js,ts}"],
           "scope": "window",
-          "markdownDescription": "Monitors these files, supports [Glob Pattern](https://code.visualstudio.com/api/references/vscode-api#GlobPattern). Default `**/tsconfig.{json,app.json,app.js,js,ts}`."
+          "markdownDescription": "Monitors these files, supports [Glob Pattern](https://code.visualstudio.com/api/references/vscode-api#GlobPattern). Default [`**/tsconfig.{json,app.json,app.js,js,ts}`]."
         },
         "autoRestart.monitorFilesForESLint": {
           "type": "boolean",
@@ -67,10 +67,10 @@
           "markdownDescription": "Monitor ESLint config files and restart its server."
         },
         "autoRestart.fileGlobForESLint": {
-          "type": "string",
-          "default": "**/.eslintrc.{js,cjs,yaml,yml,json}",
+          "type": "array",
+          "default": ["**/.eslintrc.{js,cjs,mjs,yaml,yml,json}", "**/eslint.config.{js,cjs,mjs}"],
           "scope": "window",
-          "markdownDescription": "Monitors these files, supports [Glob Pattern](https://code.visualstudio.com/api/references/vscode-api#GlobPattern). Default `**/.eslintrc.{js,cjs,yaml,yml,json}`"
+          "markdownDescription": "Monitors these files, supports [Glob Pattern](https://code.visualstudio.com/api/references/vscode-api#GlobPattern). Default [`**/.eslintrc.{js,cjs,mjs,yaml,yml,json}`, `**/eslint.config.{js,cjs,mjs}`]."
         },
         "autoRestart.showRestartNotificationForTypescript": {
           "type": "boolean",
