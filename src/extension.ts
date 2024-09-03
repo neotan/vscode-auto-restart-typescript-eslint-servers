@@ -1,18 +1,19 @@
 import {
+  commands,
+  Disposable,
+  ExtensionContext,
+  extensions,
+  GlobPattern,
+  Uri,
   window,
   workspace,
-  extensions,
-  commands,
-  ExtensionContext,
-  FileSystemWatcher,
-  GlobPattern,
 } from 'vscode'
 
 type ConfigProperties = {
   monitorFilesForTypescript: boolean
   monitorFilesForESLint: boolean
-  fileGlobForTypescript: GlobPattern
-  fileGlobForESLint: GlobPattern
+  fileGlobForTypescript: GlobPattern | GlobPattern[]
+  fileGlobForESLint: GlobPattern | GlobPattern[]
   showRestartNotificationForTypescript: boolean
   showRestartNotificationForESLint: boolean
 }
@@ -23,16 +24,8 @@ const THIS_EXT_NAME = 'vscode-auto-restart-typescript-eslint-servers'
 const THIS_EXT_ID = `neotan.${THIS_EXT_NAME}`
 const THIS_EXT_CONFIG_PREFIX = `autoRestart` // i.e. Configuration `section`
 
-// Message templates
-const TS_SERVER_RESTARTED_MSG = `TypeScript Server Restarted as file(s) `
-const TS_SERVER_RESTART_FAILED_MSG =
-  `TypeScript Server Restart failed when the file `
-const ESLINT_SERVER_RESTARTED_MSG = `ESLint Server Restarted as file(s) `
-const ESLINT_SERVER_RESTART_FAILED_MSG =
-  `ESLint Server Restart failed when the file was `
-
-let tsWatcher: FileSystemWatcher
-let eslintWatcher: FileSystemWatcher
+let tsWatcher: Disposable
+let eslintWatcher: Disposable
 
 export function activate(context: ExtensionContext) {
   workspace.onDidChangeConfiguration((e) => {
@@ -45,21 +38,21 @@ export function activate(context: ExtensionContext) {
       eslintWatcher?.dispose()
 
       if (getConfig('monitorFilesForTypescript')) {
-        tsWatcher = initWatcherForTypescript()
+        tsWatcher = initWatcher('Typescript', restartTsServer)
       }
 
       if (getConfig('monitorFilesForESLint')) {
-        eslintWatcher = initWatcherForEslint()
+        eslintWatcher = initWatcher('ESLint', restartEslintServer)
       }
     }
   })
 
   if (getConfig('monitorFilesForTypescript')) {
-    tsWatcher = initWatcherForTypescript()
+    tsWatcher = initWatcher('Typescript', restartTsServer)
   }
 
   if (getConfig('monitorFilesForESLint')) {
-    eslintWatcher = initWatcherForEslint()
+    eslintWatcher = initWatcher('ESLint', restartEslintServer)
   }
 }
 
@@ -96,138 +89,39 @@ function restartEslintServer() {
   return commands.executeCommand("eslint.restart")
 }
 
-function initWatcherForTypescript(
-  fileGlobForTypescript: GlobPattern = getConfig('fileGlobForTypescript')
-) {
-  const tsWatcher: FileSystemWatcher =
-    workspace.createFileSystemWatcher(
-      fileGlobForTypescript,
-      false,
-      false,
-      false
-    )
+function initWatcher(extension: 'Typescript' | 'ESLint', cb: () => Thenable<unknown> | void): Disposable {
+  let globs = getConfig(`fileGlobFor${extension}`)
+  // Compatibility with older configuration format
+  if (!Array.isArray(globs)) {
+    globs = [globs]
+  }
 
-  tsWatcher.onDidCreate(async (e) => {
-    const filePath = e?.path || e?.fsPath
-    try {
-      await restartTsServer()
-      if (getConfig('showRestartNotificationForTypescript')) {
-        window.showInformationMessage(
-          `${TS_SERVER_RESTARTED_MSG} created: ${filePath}`
+  function createEventHandler(type: string) {
+    return async (e: Uri) => {
+      const filePath = e.path || e.fsPath
+      try {
+        await cb()
+        if (getConfig(`showRestartNotificationFor${extension}`)) {
+          window.showInformationMessage(
+            `${extension} Server Restarted as file(s) ${type}: ${filePath}`
+          )
+        }
+      } catch (err) {
+        throw new Error(
+          `Failed to restart server when the file "${filePath}" was ${type}`,
+          { cause: err }
         )
       }
-    } catch (err) {
-      throw new Error(
-        `${TS_SERVER_RESTART_FAILED_MSG} created: 
-          "${filePath}"`,
-        { cause: err }
-      )
     }
+  }
+
+  const watchers = globs.map(glob => {
+    const watcher = workspace.createFileSystemWatcher(glob, false, false, false)
+    watcher.onDidCreate(createEventHandler('created'))
+    watcher.onDidChange(createEventHandler('changed'))
+    watcher.onDidDelete(createEventHandler('deleted'))
+    return watcher
   })
 
-  tsWatcher.onDidChange(async (e) => {
-    const filePath = e?.path || e?.fsPath
-    try {
-      await restartTsServer()
-      if (getConfig('showRestartNotificationForTypescript')) {
-        window.showInformationMessage(
-          `${TS_SERVER_RESTARTED_MSG} changed: ${filePath}`
-        )
-      }
-    } catch (err) {
-      throw new Error(
-        `${TS_SERVER_RESTART_FAILED_MSG} changed: 
-          "${filePath}"`,
-        { cause: err }
-      )
-    }
-  })
-
-  tsWatcher.onDidDelete(async (e) => {
-    const filePath = e?.path || e?.fsPath
-    try {
-      await restartTsServer()
-      if (getConfig('showRestartNotificationForTypescript')) {
-        window.showInformationMessage(
-          `${TS_SERVER_RESTARTED_MSG} deleted: ${filePath}`
-        )
-      }
-    } catch (err) {
-      throw new Error(
-        `${TS_SERVER_RESTART_FAILED_MSG} deleted: 
-          "${filePath}"`,
-        { cause: err }
-      )
-    }
-  })
-
-  return tsWatcher
-}
-
-function initWatcherForEslint(
-  fileGlobForESLint: GlobPattern = getConfig('fileGlobForESLint')
-) {
-  const eslintWatcher: FileSystemWatcher =
-    workspace.createFileSystemWatcher(
-      fileGlobForESLint,
-      false,
-      false,
-      false
-    )
-
-  eslintWatcher.onDidCreate(async (e) => {
-    const filePath = e?.path || e?.fsPath
-    try {
-      await restartEslintServer()
-      if (getConfig('showRestartNotificationForESLint')) {
-        window.showInformationMessage(
-          `${ESLINT_SERVER_RESTARTED_MSG} created: ${filePath}`
-        )
-      }
-    } catch (err) {
-      throw new Error(
-        `${ESLINT_SERVER_RESTART_FAILED_MSG} created: 
-          "${filePath}"`,
-        { cause: err }
-      )
-    }
-  })
-
-  eslintWatcher.onDidChange(async (e) => {
-    const filePath = e?.path || e?.fsPath
-    try {
-      await restartEslintServer()
-      if (getConfig('showRestartNotificationForESLint')) {
-        window.showInformationMessage(
-          `${ESLINT_SERVER_RESTARTED_MSG} changed: ${filePath}`
-        )
-      }
-    } catch (err) {
-      throw new Error(
-        `${ESLINT_SERVER_RESTART_FAILED_MSG} changed: 
-          "${filePath}"`,
-        { cause: err }
-      )
-    }
-  })
-
-  eslintWatcher.onDidDelete(async (e) => {
-    const filePath = e?.path || e?.fsPath
-    try {
-      await restartEslintServer()
-      if (getConfig('showRestartNotificationForESLint')) {
-        window.showInformationMessage(
-          `${ESLINT_SERVER_RESTARTED_MSG} deleted: ${filePath}`
-        )
-      }
-    } catch (err) {
-      throw new Error(
-        `${ESLINT_SERVER_RESTART_FAILED_MSG} deleted: 
-          "${filePath}"`,
-        { cause: err }
-      )
-    }
-  })
-
-  return eslintWatcher
+  return Disposable.from(...watchers)
 }
