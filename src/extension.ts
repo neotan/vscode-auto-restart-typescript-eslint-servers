@@ -16,6 +16,8 @@ type ConfigProperties = {
   fileGlobForESLint: GlobPattern | GlobPattern[]
   showRestartNotificationForTypescript: boolean
   showRestartNotificationForESLint: boolean
+  debounceDelayMs: number
+  excludePatterns: string[]
 }
 
 const TS_EXT_ID = 'vscode.typescript-language-features'
@@ -64,9 +66,37 @@ export function deactivate() {
 
 // ===== Utils =====
 
+function debounce<Args extends unknown[]>(
+  fn: (...args: Args) => unknown,
+  delay: number
+): (...args: Args) => void {
+  let timeoutId: ReturnType<typeof setTimeout> | null = null
+  return (...args: Args) => {
+    if (timeoutId) {
+      clearTimeout(timeoutId)
+    }
+    timeoutId = setTimeout(() => fn(...args), delay)
+  }
+}
+
 function getConfig<K extends keyof ConfigProperties>(
   property: K): ConfigProperties[K] {
   return workspace.getConfiguration(THIS_EXT_CONFIG_PREFIX).get(property)!
+}
+
+function isExcluded(filePath: string): boolean {
+  const excludePatterns = getConfig('excludePatterns')
+  // Normalize path separators for cross-platform matching
+  const normalizedPath = filePath.replace(/\\/g, '/')
+
+  return excludePatterns.some(pattern => {
+    // Convert glob pattern to a simple substring check
+    // e.g., "**/node_modules/**" -> "/node_modules/"
+    const segment = pattern
+      .replace(/^\*\*\//, '')  // Remove leading **/
+      .replace(/\/\*\*$/, '')  // Remove trailing /**
+    return normalizedPath.includes(`/${segment}/`)
+  })
 }
 
 function restartTsServer() {
@@ -89,29 +119,40 @@ function restartEslintServer() {
   return commands.executeCommand("eslint.restart")
 }
 
-function initWatcher(extension: 'Typescript' | 'ESLint', cb: () => Thenable<unknown> | void): Disposable {
-  let globs = getConfig(`fileGlobFor${extension}`)
+function initWatcher(
+  serverType: 'Typescript' | 'ESLint',
+  cb: () => Thenable<unknown> | void
+): Disposable {
+  let globs = getConfig(`fileGlobFor${serverType}`)
   // Compatibility with older configuration format
   if (!Array.isArray(globs)) {
     globs = [globs]
   }
 
-  function createEventHandler(type: string) {
-    return async (e: Uri) => {
-      const filePath = e.path || e.fsPath
-      try {
-        await cb()
-        if (getConfig(`showRestartNotificationFor${extension}`)) {
-          window.showInformationMessage(
-            `${extension} Server Restarted as file(s) ${type}: ${filePath}`
-          )
-        }
-      } catch (err) {
-        throw new Error(
-          `Failed to restart server when the file "${filePath}" was ${type}`,
-          { cause: err }
+  // Debounced handler shared across all globs and event types for this server
+  const debouncedRestart = debounce(async (filePath: string, type: string) => {
+    try {
+      await cb()
+      if (getConfig(`showRestartNotificationFor${serverType}`)) {
+        window.showInformationMessage(
+          `${serverType} Server Restarted as file(s) ${type}: ${filePath}`
         )
       }
+    } catch (err) {
+      throw new Error(
+        `Failed to restart server when the file "${filePath}" was ${type}`,
+        { cause: err }
+      )
+    }
+  }, getConfig('debounceDelayMs'))
+
+  function createEventHandler(type: string) {
+    return (e: Uri) => {
+      const filePath = e.path || e.fsPath
+      if (isExcluded(filePath)) {
+        return
+      }
+      debouncedRestart(filePath, type)
     }
   }
 

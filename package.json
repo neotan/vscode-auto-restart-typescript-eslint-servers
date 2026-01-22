@@ -3,7 +3,7 @@
   "displayName": "Auto Restart TypeScript / ESLint Servers",
   "description": "Restart TypeScript / ESLint servers AUTOMATICALLY when monitored files were changed.",
   "publisher": "neotan",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "engines": {
     "vscode": "^1.74.0"
   },
@@ -88,6 +88,22 @@
           "default": true,
           "scope": "window",
           "markdownDescription": "Show notification when restarts ESLint server."
+        },
+        "autoRestart.debounceDelayMs": {
+          "type": "number",
+          "default": 500,
+          "minimum": 0,
+          "scope": "window",
+          "markdownDescription": "Delay in milliseconds before restarting server after file changes. Helps batch rapid consecutive changes (e.g., from `npm install`)."
+        },
+        "autoRestart.excludePatterns": {
+          "type": "array",
+          "default": [
+            "**/node_modules/**",
+            "**/.dist/**"
+          ],
+          "scope": "window",
+          "markdownDescription": "Glob patterns for files/folders to exclude from monitoring. Default [`**/node_modules/**`, `**/.dist/**`]."
         }
       }
     }
