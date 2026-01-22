@@ -1,4 +1,4 @@
-### 0.0.7 (2026-01-22)
+### 0.0.8 (2026-01-22)
 * Add debounce for file watcher events to batch rapid consecutive changes (e.g., from `npm install`)
   * Configurable via `autoRestart.debounceDelayMs` (default: 500ms)
 * Add exclude patterns to filter out unwanted directories from monitoring
