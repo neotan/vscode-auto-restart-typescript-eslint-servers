@@ -3,7 +3,7 @@
   "displayName": "Auto Restart TypeScript / ESLint Servers",
   "description": "Restart TypeScript / ESLint servers AUTOMATICALLY when monitored files were changed.",
   "publisher": "neotan",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "engines": {
     "vscode": "^1.74.0"
   },
@@ -57,10 +57,11 @@
         "autoRestart.fileGlobForTypescript": {
           "type": "array",
           "default": [
-            "**/tsconfig.{json,app.json,app.js,js,ts}"
+            "**/tsconfig.{json,app.json,app.js,js,ts}",
+            "**/.git/HEAD"
           ],
           "scope": "window",
-          "markdownDescription": "Monitors these files, supports [Glob Pattern](https://code.visualstudio.com/api/references/vscode-api#GlobPattern). Default [`**/tsconfig.{json,app.json,app.js,js,ts}`]."
+          "markdownDescription": "Monitors these files, supports [Glob Pattern](https://code.visualstudio.com/api/references/vscode-api#GlobPattern). Default `[\"**/tsconfig.{json,app.json,app.js,js,ts}\", \"**/.git/HEAD\"]`."
         },
         "autoRestart.monitorFilesForESLint": {
           "type": "boolean",
@@ -72,10 +73,11 @@
           "type": "array",
           "default": [
             "**/.eslintrc.{js,cjs,mjs,yaml,yml,json}",
-            "**/eslint.config.{js,cjs,mjs}"
+            "**/eslint.config.{js,cjs,mjs}",
+            "**/.git/HEAD"
           ],
           "scope": "window",
-          "markdownDescription": "Monitors these files, supports [Glob Pattern](https://code.visualstudio.com/api/references/vscode-api#GlobPattern). Default [`**/.eslintrc.{js,cjs,mjs,yaml,yml,json}`, `**/eslint.config.{js,cjs,mjs}`]."
+          "markdownDescription": "Monitors these files, supports [Glob Pattern](https://code.visualstudio.com/api/references/vscode-api#GlobPattern). Default `[\"**/.eslintrc.{js,cjs,mjs,yaml,yml,json}\", \"**/eslint.config.{js,cjs,mjs}\", \"**/.git/HEAD\"]`."
         },
         "autoRestart.showRestartNotificationForTypescript": {
           "type": "boolean",
@@ -103,7 +105,7 @@
             "**/.dist/**"
           ],
           "scope": "window",
-          "markdownDescription": "Glob patterns for files/folders to exclude from monitoring. Default [`**/node_modules/**`, `**/.dist/**`]."
+          "markdownDescription": "Glob patterns for files/folders to exclude from monitoring. Default `[\"**/node_modules/**\", \"**/.dist/**\"]`."
         }
       }
     }
