@@ -1,3 +1,9 @@
+### 0.0.7 (2026-01-22)
+* Add debounce for file watcher events to batch rapid consecutive changes (e.g., from `npm install`)
+  * Configurable via `autoRestart.debounceDelayMs` (default: 500ms)
+* Add exclude patterns to filter out unwanted directories from monitoring
+  * Configurable via `autoRestart.excludePatterns` (default: `**/node_modules/**`, `**/.dist/**`)
+
 ### 0.0.6 (2024-09-03)
 * Add development guidelines ([#12](https://github.com/neotan/vscode-auto-restart-typescript-eslint-servers/pull/12))
 * Support multiple globs in config ([#11](https://github.com/neotan/vscode-auto-restart-typescript-eslint-servers/pull/11)) - Thanks to [@j4k0xb](https://github.com/j4k0xb)
