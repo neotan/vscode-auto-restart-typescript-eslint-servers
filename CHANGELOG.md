@@ -1,5 +1,9 @@
+### 0.0.9 (2026-01-22)
+* Add `**/.git/HEAD` glob pattern to default file monitoring for both TypeScript and ESLint ([#14](https://github.com/neotan/vscode-auto-restart-typescript-eslint-servers/issues/14))
+* Improve configuration descriptions with proper markdown formatting
+
 ### 0.0.8 (2026-01-22)
-* Add debounce for file watcher events to batch rapid consecutive changes (e.g., from `npm install`)
+* Add debounce for file watcher events to batch rapid consecutive changes (e.g., from `npm install`) ([#15](https://github.com/neotan/vscode-auto-restart-typescript-eslint-servers/issues/15))
   * Configurable via `autoRestart.debounceDelayMs` (default: 500ms)
 * Add exclude patterns to filter out unwanted directories from monitoring
   * Configurable via `autoRestart.excludePatterns` (default: `**/node_modules/**`, `**/.dist/**`)
