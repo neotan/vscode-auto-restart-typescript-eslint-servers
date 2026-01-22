@@ -3,7 +3,7 @@
   "displayName": "Auto Restart TypeScript / ESLint Servers",
   "description": "Restart TypeScript / ESLint servers AUTOMATICALLY when monitored files were changed.",
   "publisher": "neotan",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "engines": {
     "vscode": "^1.74.0"
   },
