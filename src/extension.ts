@@ -12,22 +12,27 @@ import {
 type ConfigProperties = {
   monitorFilesForTypescript: boolean
   monitorFilesForESLint: boolean
+  monitorFilesForStylelint: boolean
   fileGlobForTypescript: GlobPattern | GlobPattern[]
   fileGlobForESLint: GlobPattern | GlobPattern[]
+  fileGlobForStylelint: GlobPattern | GlobPattern[]
   showRestartNotificationForTypescript: boolean
   showRestartNotificationForESLint: boolean
+  showRestartNotificationForStylelint: boolean
   debounceDelayMs: number
   excludePatterns: string[]
 }
 
 const TS_EXT_ID = 'vscode.typescript-language-features'
 const ESLINT_EXT_ID = 'dbaeumer.vscode-eslint'
+const STYLELINT_EXT_ID = 'stylelint.vscode-stylelint'
 const THIS_EXT_NAME = 'vscode-auto-restart-typescript-eslint-servers'
 const THIS_EXT_ID = `neotan.${THIS_EXT_NAME}`
 const THIS_EXT_CONFIG_PREFIX = `autoRestart` // i.e. Configuration `section`
 
 let tsWatcher: Disposable
 let eslintWatcher: Disposable
+let stylelintWatcher: Disposable
 
 export function activate(context: ExtensionContext) {
   workspace.onDidChangeConfiguration((e) => {
@@ -38,6 +43,7 @@ export function activate(context: ExtensionContext) {
     if (e.affectsConfiguration(THIS_EXT_CONFIG_PREFIX)) {
       tsWatcher?.dispose()
       eslintWatcher?.dispose()
+      stylelintWatcher?.dispose()
 
       if (getConfig('monitorFilesForTypescript')) {
         tsWatcher = initWatcher('Typescript', restartTsServer)
@@ -45,6 +51,10 @@ export function activate(context: ExtensionContext) {
 
       if (getConfig('monitorFilesForESLint')) {
         eslintWatcher = initWatcher('ESLint', restartEslintServer)
+      }
+
+      if (getConfig('monitorFilesForStylelint')) {
+        stylelintWatcher = initWatcher('Stylelint', restartStylelintServer)
       }
     }
   })
@@ -56,11 +66,16 @@ export function activate(context: ExtensionContext) {
   if (getConfig('monitorFilesForESLint')) {
     eslintWatcher = initWatcher('ESLint', restartEslintServer)
   }
+
+  if (getConfig('monitorFilesForStylelint')) {
+    stylelintWatcher = initWatcher('Stylelint', restartStylelintServer)
+  }
 }
 
 export function deactivate() {
   tsWatcher?.dispose()
   eslintWatcher?.dispose()
+  stylelintWatcher?.dispose()
   console.log(`Extension ${THIS_EXT_ID} is now deactivated!`)
 }
 
@@ -119,8 +134,18 @@ function restartEslintServer() {
   return commands.executeCommand("eslint.restart")
 }
 
+function restartStylelintServer() {
+  const stylelintExtension = extensions.getExtension(STYLELINT_EXT_ID)
+  if (!stylelintExtension || stylelintExtension.isActive === false) {
+    window.showErrorMessage("Stylelint extension is not active or not running.")
+    return
+  }
+
+  return commands.executeCommand("stylelint.restart")
+}
+
 function initWatcher(
-  serverType: 'Typescript' | 'ESLint',
+  serverType: 'Typescript' | 'ESLint' | 'Stylelint',
   cb: () => Thenable<unknown> | void
 ): Disposable {
   let globs = getConfig(`fileGlobFor${serverType}`)

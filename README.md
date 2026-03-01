@@ -1,6 +1,6 @@
 # vscode-auto-restart-typescript-eslint-servers
 
-Automatically restart TypeScript and ESLint servers when configuration files change—no manual restarts needed! 🚀
+Automatically restart TypeScript, ESLint, and Stylelint servers when configuration files change—no manual restarts needed! 🚀
 <img src="https://raw.githubusercontent.com/neotan/vscode-auto-restart-typescript-eslint-servers/master/images/_banner.png" alt="Banner" />
 
 ## VS Code Marketplace:
@@ -15,16 +15,17 @@ Works out of the box! The extension automatically monitors common configuration 
 ### ⚡ **Smart & Efficient**
 - **Intelligent Debouncing**: Batches rapid file changes (like during `npm install`) to prevent unnecessary server restarts, keeping your workspace responsive
 - **Selective Monitoring**: Automatically excludes `node_modules` and build directories to focus on what matters
-- **Performance Optimized**: Only watches files that actually affect your TypeScript/ESLint configuration
+- **Performance Optimized**: Only watches files that actually affect your TypeScript/ESLint/Stylelint configuration
 
 ### 🎯 **Comprehensive File Monitoring**
 Automatically detects changes to:
 - **TypeScript**: `tsconfig.json`, `tsconfig.app.json`, `tsconfig.app.js`, and more
 - **ESLint**: `.eslintrc.*` files (JS, CJS, MJS, YAML, JSON) and modern `eslint.config.*` files
+- **Stylelint**: `.stylelintrc`, `.stylelintrc.*` files (JS, MJS, CJS, YAML, JSON) and `stylelint.config.*` files
 - **Git Integration**: Monitors `.git/HEAD` to catch branch switches and configuration updates
 
 ### 🛠️ **Fully Customizable**
-- **Independent Controls**: Enable/disable TypeScript and ESLint monitoring separately
+- **Independent Controls**: Enable/disable TypeScript, ESLint, and Stylelint monitoring separately
 - **Custom Glob Patterns**: Configure exactly which files to monitor using VS Code's glob pattern syntax
 - **Flexible Exclusions**: Add your own exclude patterns to ignore specific directories
 - **Notification Preferences**: Choose whether to see restart notifications for each server type
@@ -36,7 +37,7 @@ Perfect for large projects using Turborepo, Lerna, Nx, or other monorepo tools. 
 ### 💡 **Developer Experience**
 - **Instant Feedback**: Get notified when servers restart (optional)
 - **No Manual Restarts**: Never manually restart servers again—the extension handles it automatically
-- **Works Seamlessly**: Integrates with VS Code's built-in TypeScript and ESLint extensions
+- **Works Seamlessly**: Integrates with VS Code's built-in TypeScript, ESLint, and Stylelint extensions
 
 ---
 
@@ -91,4 +92,5 @@ You can now test the functionality of the extension within VSCode.
 ## Credits
 * [vscode-restart-ts-server-button](https://github.com/qcz/vscode-restart-ts-server-button) by [Qcz](github.com/qcz)
 * [vscode-eslint](https://github.com/microsoft/vscode-eslint) by [Microsoft](github.com/microsoft)
+* [vscode-stylelint](https://github.com/stylelint/vscode-stylelint) by [Stylelint](github.com/stylelint)
  

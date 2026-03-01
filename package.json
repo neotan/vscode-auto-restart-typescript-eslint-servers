@@ -1,7 +1,7 @@
 {
   "name": "vscode-auto-restart-typescript-eslint-servers",
-  "displayName": "Auto Restart TypeScript / ESLint Servers",
-  "description": "Restart TypeScript / ESLint servers AUTOMATICALLY when monitored files were changed.",
+  "displayName": "Auto Restart TypeScript / ESLint / Stylelint Servers",
+  "description": "Restart TypeScript / ESLint / Stylelint servers AUTOMATICALLY when monitored files were changed.",
   "publisher": "neotan",
   "version": "0.0.10",
   "engines": {
@@ -28,6 +28,11 @@
     "tsconfig",
     "eslint",
     "eslintrc",
+    "stylelint",
+    "stylelintrc",
+    "css",
+    "scss",
+    "less",
     "server",
     "turborepo",
     "lerna",
@@ -46,7 +51,7 @@
   "contributes": {
     "configuration": {
       "type": "object",
-      "title": "Auto Restart TypeScript / ESLint Servers",
+      "title": "Auto Restart TypeScript / ESLint / Stylelint Servers",
       "properties": {
         "autoRestart.monitorFilesForTypescript": {
           "type": "boolean",
@@ -90,6 +95,29 @@
           "default": true,
           "scope": "window",
           "markdownDescription": "Show notification when restarts ESLint server."
+        },
+        "autoRestart.monitorFilesForStylelint": {
+          "type": "boolean",
+          "default": true,
+          "scope": "window",
+          "markdownDescription": "Monitor Stylelint config files and restart its server."
+        },
+        "autoRestart.fileGlobForStylelint": {
+          "type": "array",
+          "default": [
+            "**/.stylelintrc",
+            "**/.stylelintrc.{js,mjs,cjs,yml,yaml,json}",
+            "**/stylelint.config.{js,mjs,cjs,ts}",
+            "**/.git/HEAD"
+          ],
+          "scope": "window",
+          "markdownDescription": "Monitors these files, supports [Glob Pattern](https://code.visualstudio.com/api/references/vscode-api#GlobPattern). Default `[\"**/.stylelintrc\", \"**/.stylelintrc.{js,mjs,cjs,yml,yaml,json}\", \"**/stylelint.config.{js,mjs,cjs,ts}\", \"**/.git/HEAD\"]`."
+        },
+        "autoRestart.showRestartNotificationForStylelint": {
+          "type": "boolean",
+          "default": true,
+          "scope": "window",
+          "markdownDescription": "Show notification when restarts Stylelint server."
         },
         "autoRestart.debounceDelayMs": {
           "type": "number",
