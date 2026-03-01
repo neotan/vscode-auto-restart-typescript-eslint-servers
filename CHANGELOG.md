@@ -1,4 +1,4 @@
-### 0.0.10 (2026-03-01)
+### 0.0.11 (2026-03-01)
 * Add Stylelint server auto-restart support ([#20](https://github.com/neotan/vscode-auto-restart-typescript-eslint-servers/issues/20))
   * Monitors `.stylelintrc`, `.stylelintrc.{js,mjs,cjs,yml,yaml,json}`, `stylelint.config.{js,mjs,cjs,ts}`, and `.git/HEAD`
   * Configurable via `autoRestart.monitorFilesForStylelint`, `autoRestart.fileGlobForStylelint`, and `autoRestart.showRestartNotificationForStylelint`
