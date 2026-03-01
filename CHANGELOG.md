@@ -1,3 +1,8 @@
+### 0.0.10 (2026-03-01)
+* Add Stylelint server auto-restart support ([#20](https://github.com/neotan/vscode-auto-restart-typescript-eslint-servers/issues/20))
+  * Monitors `.stylelintrc`, `.stylelintrc.{js,mjs,cjs,yml,yaml,json}`, `stylelint.config.{js,mjs,cjs,ts}`, and `.git/HEAD`
+  * Configurable via `autoRestart.monitorFilesForStylelint`, `autoRestart.fileGlobForStylelint`, and `autoRestart.showRestartNotificationForStylelint`
+
 ### 0.0.9 (2026-01-22)
 * Add `**/.git/HEAD` glob pattern to default file monitoring for both TypeScript and ESLint ([#14](https://github.com/neotan/vscode-auto-restart-typescript-eslint-servers/issues/14))
 * Improve configuration descriptions with proper markdown formatting
