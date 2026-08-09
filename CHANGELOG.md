@@ -1,3 +1,11 @@
+## Unreleased
+* Add remark language server auto-restart support
+  * Monitors `.remarkignore`, `.remarkrc*`, `package.json`, and `.git/HEAD`
+  * Configurable via `autoRestart.monitorFilesForRemark`, `autoRestart.fileGlobForRemark`, and `autoRestart.showRestartNotificationForRemark`
+* Add Astro language server auto-restart support
+  * Monitors `astro.config.{mjs,js,ts,mts}` and `.git/HEAD`
+  * Configurable via `autoRestart.monitorFilesForAstro`, `autoRestart.fileGlobForAstro`, and `autoRestart.showRestartNotificationForAstro`
+
 ### 0.0.11 (2026-03-01)
 * Add Stylelint server auto-restart support ([#20](https://github.com/neotan/vscode-auto-restart-typescript-eslint-servers/issues/20))
   * Monitors `.stylelintrc`, `.stylelintrc.{js,mjs,cjs,yml,yaml,json}`, `stylelint.config.{js,mjs,cjs,ts}`, and `.git/HEAD`
