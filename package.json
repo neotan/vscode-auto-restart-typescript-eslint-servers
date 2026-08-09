@@ -1,7 +1,7 @@
 {
   "name": "vscode-auto-restart-typescript-eslint-servers",
-  "displayName": "Auto Restart TypeScript / ESLint / Stylelint Servers",
-  "description": "Restart TypeScript / ESLint / Stylelint servers AUTOMATICALLY when monitored files were changed.",
+  "displayName": "Auto Restart TypeScript / ESLint / Stylelint / Remark / Astro Servers",
+  "description": "Restart TypeScript, ESLint, Stylelint, Remark, and Astro servers AUTOMATICALLY when monitored files were changed.",
   "publisher": "neotan",
   "version": "0.0.11",
   "engines": {
@@ -30,6 +30,10 @@
     "eslintrc",
     "stylelint",
     "stylelintrc",
+    "remark",
+    "remarkrc",
+    "markdown",
+    "astro",
     "css",
     "scss",
     "less",
@@ -51,7 +55,7 @@
   "contributes": {
     "configuration": {
       "type": "object",
-      "title": "Auto Restart TypeScript / ESLint / Stylelint Servers",
+      "title": "Auto Restart TypeScript / ESLint / Stylelint / Remark / Astro Servers",
       "properties": {
         "autoRestart.monitorFilesForTypescript": {
           "type": "boolean",
@@ -118,6 +122,49 @@
           "default": true,
           "scope": "window",
           "markdownDescription": "Show notification when restarts Stylelint server."
+        },
+        "autoRestart.monitorFilesForRemark": {
+          "type": "boolean",
+          "default": true,
+          "scope": "window",
+          "markdownDescription": "Monitor remark config and ignore files and restart its language server."
+        },
+        "autoRestart.fileGlobForRemark": {
+          "type": "array",
+          "default": [
+            "**/.remark{ignore,rc,rc.cjs,rc.js,rc.json,rc.mjs,rc.yaml,rc.yml}",
+            "**/package.json",
+            "**/.git/HEAD"
+          ],
+          "scope": "window",
+          "markdownDescription": "Monitors these files, supports [Glob Pattern](https://code.visualstudio.com/api/references/vscode-api#GlobPattern). Default `[\"**/.remark{ignore,rc,rc.cjs,rc.js,rc.json,rc.mjs,rc.yaml,rc.yml}\", \"**/package.json\", \"**/.git/HEAD\"]`."
+        },
+        "autoRestart.showRestartNotificationForRemark": {
+          "type": "boolean",
+          "default": true,
+          "scope": "window",
+          "markdownDescription": "Show notification when restarts remark language server."
+        },
+        "autoRestart.monitorFilesForAstro": {
+          "type": "boolean",
+          "default": true,
+          "scope": "window",
+          "markdownDescription": "Monitor Astro config files and restart its language server."
+        },
+        "autoRestart.fileGlobForAstro": {
+          "type": "array",
+          "default": [
+            "**/astro.config.{mjs,js,ts,mts}",
+            "**/.git/HEAD"
+          ],
+          "scope": "window",
+          "markdownDescription": "Monitors these files, supports [Glob Pattern](https://code.visualstudio.com/api/references/vscode-api#GlobPattern). Default `[\"**/astro.config.{mjs,js,ts,mts}\", \"**/.git/HEAD\"]`."
+        },
+        "autoRestart.showRestartNotificationForAstro": {
+          "type": "boolean",
+          "default": true,
+          "scope": "window",
+          "markdownDescription": "Show notification when restarts Astro language server."
         },
         "autoRestart.debounceDelayMs": {
           "type": "number",

@@ -1,6 +1,7 @@
 import {
   commands,
   Disposable,
+  Extension,
   ExtensionContext,
   extensions,
   GlobPattern,
@@ -13,19 +14,37 @@ type ConfigProperties = {
   monitorFilesForTypescript: boolean
   monitorFilesForESLint: boolean
   monitorFilesForStylelint: boolean
+  monitorFilesForRemark: boolean
+  monitorFilesForAstro: boolean
   fileGlobForTypescript: GlobPattern | GlobPattern[]
   fileGlobForESLint: GlobPattern | GlobPattern[]
   fileGlobForStylelint: GlobPattern | GlobPattern[]
+  fileGlobForRemark: GlobPattern | GlobPattern[]
+  fileGlobForAstro: GlobPattern | GlobPattern[]
   showRestartNotificationForTypescript: boolean
   showRestartNotificationForESLint: boolean
   showRestartNotificationForStylelint: boolean
+  showRestartNotificationForRemark: boolean
+  showRestartNotificationForAstro: boolean
   debounceDelayMs: number
   excludePatterns: string[]
+}
+
+type AstroLanguageClient = {
+  restart: () => Thenable<void>
+}
+
+type AstroExtensionExports = {
+  volarLabs?: {
+    languageClients?: AstroLanguageClient[]
+  }
 }
 
 const TS_EXT_ID = 'vscode.typescript-language-features'
 const ESLINT_EXT_ID = 'dbaeumer.vscode-eslint'
 const STYLELINT_EXT_ID = 'stylelint.vscode-stylelint'
+const REMARK_EXT_ID = 'unifiedjs.vscode-remark'
+const ASTRO_EXT_ID = 'astro-build.astro-vscode'
 const THIS_EXT_NAME = 'vscode-auto-restart-typescript-eslint-servers'
 const THIS_EXT_ID = `neotan.${THIS_EXT_NAME}`
 const THIS_EXT_CONFIG_PREFIX = `autoRestart` // i.e. Configuration `section`
@@ -33,6 +52,8 @@ const THIS_EXT_CONFIG_PREFIX = `autoRestart` // i.e. Configuration `section`
 let tsWatcher: Disposable
 let eslintWatcher: Disposable
 let stylelintWatcher: Disposable
+let remarkWatcher: Disposable
+let astroWatcher: Disposable
 
 export function activate(context: ExtensionContext) {
   workspace.onDidChangeConfiguration((e) => {
@@ -44,6 +65,8 @@ export function activate(context: ExtensionContext) {
       tsWatcher?.dispose()
       eslintWatcher?.dispose()
       stylelintWatcher?.dispose()
+      remarkWatcher?.dispose()
+      astroWatcher?.dispose()
 
       if (getConfig('monitorFilesForTypescript')) {
         tsWatcher = initWatcher('Typescript', restartTsServer)
@@ -55,6 +78,14 @@ export function activate(context: ExtensionContext) {
 
       if (getConfig('monitorFilesForStylelint')) {
         stylelintWatcher = initWatcher('Stylelint', restartStylelintServer)
+      }
+
+      if (getConfig('monitorFilesForRemark')) {
+        remarkWatcher = initWatcher('Remark', restartRemarkServer)
+      }
+
+      if (getConfig('monitorFilesForAstro')) {
+        astroWatcher = initWatcher('Astro', restartAstroServer)
       }
     }
   })
@@ -70,12 +101,22 @@ export function activate(context: ExtensionContext) {
   if (getConfig('monitorFilesForStylelint')) {
     stylelintWatcher = initWatcher('Stylelint', restartStylelintServer)
   }
+
+  if (getConfig('monitorFilesForRemark')) {
+    remarkWatcher = initWatcher('Remark', restartRemarkServer)
+  }
+
+  if (getConfig('monitorFilesForAstro')) {
+    astroWatcher = initWatcher('Astro', restartAstroServer)
+  }
 }
 
 export function deactivate() {
   tsWatcher?.dispose()
   eslintWatcher?.dispose()
   stylelintWatcher?.dispose()
+  remarkWatcher?.dispose()
+  astroWatcher?.dispose()
   console.log(`Extension ${THIS_EXT_ID} is now deactivated!`)
 }
 
@@ -114,39 +155,81 @@ function isExcluded(filePath: string): boolean {
   })
 }
 
-function restartTsServer() {
-  const tsExtension = extensions.getExtension(TS_EXT_ID)
-  if (!tsExtension || tsExtension.isActive === false) {
-    window.showErrorMessage(`${THIS_EXT_NAME} is not active or not running.`)
-    return
+function getActiveExtension<T>(
+  extensionId: string,
+  extensionName: string
+): Extension<T> | undefined {
+  const extension = extensions.getExtension<T>(extensionId)
+  if (!extension || extension.isActive === false) {
+    window.showErrorMessage(
+      `${extensionName} extension is not active or not running.`
+    )
+    return undefined
   }
 
-  return commands.executeCommand("typescript.restartTsServer")
+  return extension
 }
 
-function restartEslintServer() {
-  const eslintExtension = extensions.getExtension(ESLINT_EXT_ID)
-  if (!eslintExtension || eslintExtension.isActive === false) {
-    window.showErrorMessage("ESLint extension is not active or not running.")
-    return
+async function restartTsServer(): Promise<boolean> {
+  if (!getActiveExtension(TS_EXT_ID, 'TypeScript')) {
+    return false
   }
 
-  return commands.executeCommand("eslint.restart")
+  await commands.executeCommand('typescript.restartTsServer')
+  return true
 }
 
-function restartStylelintServer() {
-  const stylelintExtension = extensions.getExtension(STYLELINT_EXT_ID)
-  if (!stylelintExtension || stylelintExtension.isActive === false) {
-    window.showErrorMessage("Stylelint extension is not active or not running.")
-    return
+async function restartEslintServer(): Promise<boolean> {
+  if (!getActiveExtension(ESLINT_EXT_ID, 'ESLint')) {
+    return false
   }
 
-  return commands.executeCommand("stylelint.restart")
+  await commands.executeCommand('eslint.restart')
+  return true
+}
+
+async function restartStylelintServer(): Promise<boolean> {
+  if (!getActiveExtension(STYLELINT_EXT_ID, 'Stylelint')) {
+    return false
+  }
+
+  await commands.executeCommand('stylelint.restart')
+  return true
+}
+
+async function restartRemarkServer(): Promise<boolean> {
+  if (!getActiveExtension(REMARK_EXT_ID, 'Remark')) {
+    return false
+  }
+
+  await commands.executeCommand('remark.restart')
+  return true
+}
+
+async function restartAstroServer(): Promise<boolean> {
+  const astroExtension = getActiveExtension<AstroExtensionExports>(
+    ASTRO_EXT_ID,
+    'Astro'
+  )
+  if (!astroExtension) {
+    return false
+  }
+
+  const languageClients = astroExtension.exports.volarLabs?.languageClients
+  if (!languageClients?.length) {
+    window.showErrorMessage(
+      'Astro extension does not expose an active language server.'
+    )
+    return false
+  }
+
+  await Promise.all(languageClients.map(client => client.restart()))
+  return true
 }
 
 function initWatcher(
-  serverType: 'Typescript' | 'ESLint' | 'Stylelint',
-  cb: () => Thenable<unknown> | void
+  serverType: 'Typescript' | 'ESLint' | 'Stylelint' | 'Remark' | 'Astro',
+  cb: () => Thenable<boolean>
 ): Disposable {
   let globs = getConfig(`fileGlobFor${serverType}`)
   // Compatibility with older configuration format
@@ -157,7 +240,10 @@ function initWatcher(
   // Debounced handler shared across all globs and event types for this server
   const debouncedRestart = debounce(async (filePath: string, type: string) => {
     try {
-      await cb()
+      const restarted = await cb()
+      if (!restarted) {
+        return
+      }
       if (getConfig(`showRestartNotificationFor${serverType}`)) {
         window.showInformationMessage(
           `${serverType} Server Restarted as file(s) ${type}: ${filePath}`
